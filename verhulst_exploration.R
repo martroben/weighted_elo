@@ -8,8 +8,8 @@ dverhulst <- function(x, base, coefficient) {
 }
 
 log_base <<- sqrt(10)
-coefficient <<- 200
-max_points <<- 32
+coefficient <<- 1
+max_points <<- 1
 
 curve(pverhulst(x, sqrt(10), 200), from = -1000, to = 1000)
 
@@ -36,12 +36,30 @@ elo(94.95047, -94.95047, 1)
 elo(102.9832, -102.9832, 1)
 
 
-player_score <- c(2000)
-opponent_score <- c(2000)
-for (i in 1:10000) {
+player_score <- c(5)
+opponent_score <- c(5)
+for (i in 1:5) {
   player_score <- c(player_score, elo(player_score[length(player_score)], opponent_score[length(opponent_score)], 1))
   opponent_score <- c(opponent_score, elo(opponent_score[length(opponent_score)], player_score[length(player_score)], 0))
 }
 
 plot(player_score)
+
+
+# Not working
+get_second_game_rating <- function(player_rating, opponent_rating) {
+  # Test expression for 2nd game score between same players
+  A <- .GlobalEnv$log_base^(opponent_rating - player_rating)
+  B <- 2 * .GlobalEnv$log_base^(player_rating + opponent_rating) / (.GlobalEnv$log_base^opponent_rating + .GlobalEnv$log_base^player_rating)^2
+  
+  second_game_rating <- player_rating + 2 - 1/(1 + A) - 1 / (1 + A * .GlobalEnv$log_base^(-B))
+  
+  # player_rating + 2 - 1 / (1 + .GlobalEnv$log_base^(opponent_rating - player_rating)) - 1 / (1 + .GlobalEnv$log_base^(opponent_rating - player_rating) * .GlobalEnv$log_base^(-2 * .GlobalEnv$log_base^(player_rating + opponent_rating) / (.GlobalEnv$log_base^player_rating + .GlobalEnv$log_base^opponent_rating)^2))
+  return (second_game_rating)
+}
+
+get_second_game_rating(5, 5)
+
+###########################
+
 
